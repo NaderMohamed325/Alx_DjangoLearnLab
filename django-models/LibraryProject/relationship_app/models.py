@@ -1,21 +1,6 @@
 from django.db import models
 
 # Create your models here.
-'''
-This file contains the models for the relationship application.
-Author Model:
-name: CharField.
-Book Model:
-title: CharField.
-author: ForeignKey to Author.
-Library Model:
-name: CharField.
-books: ManyToManyField to Book.
-Librarian Model:
-name: CharField.
-library: OneToOneField to Library.
-
-'''
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
