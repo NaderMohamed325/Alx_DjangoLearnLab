@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librarian Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #28a745;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .dashboard-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .librarian-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+            text-align: center;
+        }
+        .feature-card h3 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        .nav-links {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .nav-links a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+        .user-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📖 Librarian Dashboard</h1>
+        <p>Library Management and Book Operations</p>
+    </div>
+
+    <div class="container">
+        <div class="user-info">
+            <strong>Logged in as:</strong> {{ user.username }} 
+            <span style="color: #28a745; font-weight: bold;">(Librarian)</span>
+            <div style="float: right;">
+                <a href="{% url 'logout' %}" style="color: #dc3545; text-decoration: none;">Logout</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Librarian Access Panel</h2>
+            <p>You have librarian privileges to manage books, assist patrons, and maintain library operations.</p>
+            
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-number">{{ books.count|default:"0" }}</div>
+                    <div>Total Books</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ libraries.count|default:"0" }}</div>
+                    <div>Libraries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ authors.count|default:"0" }}</div>
+                    <div>Authors</div>
+                </div>
+            </div>
+
+            <div class="librarian-features">
+                <div class="feature-card">
+                    <h3>📚 Book Management</h3>
+                    <p>Add new books, update book information, and manage inventory</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>👤 Patron Services</h3>
+                    <p>Assist library members with book searches and recommendations</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📋 Catalog Management</h3>
+                    <p>Organize and maintain the library catalog system</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔄 Book Circulation</h3>
+                    <p>Monitor book checkouts, returns, and reservations</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📊 Library Reports</h3>
+                    <p>Generate reports on book usage and library statistics</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🏷️ Book Classification</h3>
+                    <p>Categorize and tag books for better organization</p>
+                </div>
+            </div>
+
+            <div style="background-color: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                <strong>📋 Librarian Responsibilities:</strong> You can manage books and assist patrons, but system administration requires admin privileges.
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'book_list' %}">📚 View All Books</a>
+            <a href="{% url 'member_view' %}">👤 Member View</a>
+            {% if user.is_superuser %}
+                <a href="{% url 'admin_view' %}">🔧 Admin Panel</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

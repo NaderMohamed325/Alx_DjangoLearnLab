@@ -3,7 +3,8 @@ from django.views.generic.detail import DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
-from .models import Library, Book
+from django.contrib.auth.decorators import user_passes_test
+from .models import Library, Book, UserProfile
 from django.http import HttpRequest
 
 # Create your views here.
@@ -48,3 +49,32 @@ class CustomLoginView(LoginView):
 class CustomLogoutView(LogoutView):
     """Custom logout view using Django's built-in LogoutView"""
     template_name = 'relationship_app/logout.html'
+
+# Role checking functions
+def is_admin(user):
+    """Check if user has Admin role"""
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+
+def is_librarian(user):
+    """Check if user has Librarian role"""
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
+
+def is_member(user):
+    """Check if user has Member role"""
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
+
+# Role-based views
+@user_passes_test(is_admin)
+def admin_view(request):
+    """Admin-only view"""
+    return render(request, 'relationship_app/admin_view.html')
+
+@user_passes_test(is_librarian)
+def librarian_view(request):
+    """Librarian-only view"""
+    return render(request, 'relationship_app/librarian_view.html')
+
+@user_passes_test(is_member)
+def member_view(request):
+    """Member-only view"""
+    return render(request, 'relationship_app/member_view.html')
