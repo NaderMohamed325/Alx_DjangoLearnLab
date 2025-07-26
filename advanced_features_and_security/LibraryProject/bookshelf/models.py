@@ -16,7 +16,7 @@ class CustomUser(AbstractUser):
     profile_photo=models.ImageField(upload_to='userPhoto/',blank=True,null=True)
         
 
-class CustomUserManeger(BaseUserManager):
+class CustomUserManager(BaseUserManager):
         def create_user(self,email,username,date_of_birth=None,profile_photo=None,password=None,**extra_fields):
             if not email:
                 raise ValueError("email Field is required")
@@ -34,23 +34,23 @@ class CustomUserManeger(BaseUserManager):
             user.save(using=self._db)
             return user
             
-def create_superuser(self, username, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active', True)
+        def create_superuser(self, username, email, password=None, **extra_fields):
+         extra_fields.setdefault('is_staff', True)
+         extra_fields.setdefault('is_superuser', True)
+         extra_fields.setdefault('is_active', True)
 
-        if extra_fields.get('is_staff') is not True:
+         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True')
-        if extra_fields.get('is_superuser') is not True:
+         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True')
 
-        return self.create_user(
+         return self.create_user(
             username=username,
             email=email,
             password=password,
             date_of_birth='2000-01-01',  # default or required manually
             **extra_fields
-        )
+         )
           
           
             
