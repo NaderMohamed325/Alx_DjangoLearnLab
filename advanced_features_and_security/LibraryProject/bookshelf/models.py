@@ -6,6 +6,8 @@ class Book(models.Model):
     title=models.CharField(max_length=200)
     author=models.CharField(max_length=100)
     publication_year=models.IntegerField()
+    class Meta:
+        permission=[("can_view","can_create","can_edit","can_delete")]
     
 '''
 date_of_birth: A date field.
