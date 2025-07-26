@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .dashboard-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .admin-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            text-align: center;
+        }
+        .feature-card h3 {
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+        .nav-links {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .nav-links a {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav-links a:hover {
+            background-color: #0056b3;
+        }
+        .user-info {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔧 Admin Dashboard</h1>
+        <p>Welcome to the Administrator Control Panel</p>
+    </div>
+
+    <div class="container">
+        <div class="user-info">
+            <strong>Logged in as:</strong> {{ user.username }} 
+            <span style="color: #dc3545; font-weight: bold;">(Admin)</span>
+            <div style="float: right;">
+                <a href="{% url 'logout' %}" style="color: #dc3545; text-decoration: none;">Logout</a>
+            </div>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Administrator Access Granted</h2>
+            <p>You have full administrative privileges to manage the library system.</p>
+            
+            <div class="admin-features">
+                <div class="feature-card">
+                    <h3>📚 Manage Books</h3>
+                    <p>Add, edit, or remove books from the library catalog</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>👥 User Management</h3>
+                    <p>Manage user accounts and assign roles</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🏢 Library Administration</h3>
+                    <p>Configure library settings and policies</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📊 Reports & Analytics</h3>
+                    <p>View system reports and analytics</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>⚙️ System Settings</h3>
+                    <p>Configure application settings and preferences</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔒 Security Management</h3>
+                    <p>Manage security settings and permissions</p>
+                </div>
+            </div>
+
+            <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                <strong>⚠️ Administrator Notice:</strong> You have unrestricted access to all system functions. Please use these privileges responsibly.
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="{% url 'book_list' %}">📚 View All Books</a>
+            <a href="{% url 'librarian_view' %}">👨‍💼 Librarian View</a>
+            <a href="{% url 'member_view' %}">👤 Member View</a>
+            <a href="/admin/">🔧 Django Admin</a>
+        </div>
+    </div>
+</body>
+</html>

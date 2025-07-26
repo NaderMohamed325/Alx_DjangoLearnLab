@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Books</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+      .header {
+        background-color: #343a40;
+        color: white;
+        padding: 1rem;
+        margin: -20px -20px 20px -20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .user-info {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+      .user-info a {
+        color: #17a2b8;
+        text-decoration: none;
+        padding: 5px 10px;
+        border: 1px solid #17a2b8;
+        border-radius: 4px;
+      }
+      .user-info a:hover {
+        background-color: #17a2b8;
+        color: white;
+      }
+      .book-item {
+        margin: 15px 0;
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .book-title {
+        font-weight: bold;
+        color: #495057;
+        font-size: 1.2em;
+        margin-bottom: 8px;
+      }
+      .book-author {
+        color: #6c757d;
+        margin-bottom: 5px;
+      }
+      .book-year {
+        color: #adb5bd;
+        font-style: italic;
+      }
+      .no-books {
+        text-align: center;
+        color: #6c757d;
+        font-style: italic;
+        padding: 40px;
+      }
+      .nav-links {
+        margin-top: 20px;
+        text-align: center;
+      }
+      .nav-links a {
+        color: #007bff;
+        text-decoration: none;
+        margin: 0 15px;
+        padding: 8px 16px;
+        border: 1px solid #007bff;
+        border-radius: 4px;
+        display: inline-block;
+      }
+      .nav-links a:hover {
+        background-color: #007bff;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Library Management System</h1>
+      <div class="user-info">
+        {% if user.is_authenticated %}
+        <span>Welcome, {{ user.username }}!</span>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <h2>All Books in the Library</h2>
+
+    {% if books %}
+    <div class="books-container">
+      {% for book in books %}
+      <div class="book-item">
+        <div class="book-title">{{ book.title }}</div>
+        <div class="book-author">
+          <strong>Author:</strong> {{ book.author }}
+        </div>
+        <div class="book-year">
+          <strong>Published:</strong> {{ book.publication_year }}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p><strong>Total Books:</strong> {{ books|length }}</p>
+    {% else %}
+    <div class="no-books">
+      <p>No books are currently available in the library.</p>
+    </div>
+    {% endif %}
+
+    <div class="nav-links">
+      <a href="{% url 'library_detail' pk=1 %}">View Library Details</a>
+    </div>
+  </body>
+</html>

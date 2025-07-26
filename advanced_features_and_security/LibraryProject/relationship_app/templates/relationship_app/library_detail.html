@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ library.name }} - Library Details</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+      .header {
+        background-color: #343a40;
+        color: white;
+        padding: 1rem;
+        margin: -20px -20px 20px -20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .user-info {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+      }
+      .user-info a {
+        color: #17a2b8;
+        text-decoration: none;
+        padding: 5px 10px;
+        border: 1px solid #17a2b8;
+        border-radius: 4px;
+      }
+      .user-info a:hover {
+        background-color: #17a2b8;
+        color: white;
+      }
+      .library-header {
+        color: #495057;
+        border-bottom: 3px solid #007bff;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .books-section {
+        margin-top: 20px;
+      }
+      .book-item {
+        margin: 15px 0;
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .book-title {
+        font-weight: bold;
+        color: #495057;
+        font-size: 1.1em;
+        margin-bottom: 8px;
+      }
+      .book-author {
+        color: #6c757d;
+        margin: 8px 0;
+      }
+      .book-year {
+        color: #adb5bd;
+        font-style: italic;
+      }
+      .no-books {
+        color: #dc3545;
+        font-style: italic;
+        text-align: center;
+        padding: 40px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .nav-links {
+        margin-top: 30px;
+        text-align: center;
+      }
+      .nav-links a {
+        color: #007bff;
+        text-decoration: none;
+        margin: 0 15px;
+        padding: 8px 16px;
+        border: 1px solid #007bff;
+        border-radius: 4px;
+        display: inline-block;
+      }
+      .nav-links a:hover {
+        background-color: #007bff;
+        color: white;
+      }
+      .stats {
+        background-color: #e9ecef;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        text-align: center;
+        font-weight: bold;
+        color: #495057;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Library Management System</h1>
+      <div class="user-info">
+        {% if user.is_authenticated %}
+        <span>Welcome, {{ user.username }}!</span>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="library-header">
+      <h1>{{ library.name }}</h1>
+      {% if library.location %}
+      <p><strong>Location:</strong> {{ library.location }}</p>
+      {% endif %}
+    </div>
+
+    <div class="books-section">
+      <h2>Books in this Library:</h2>
+
+      {% if library.books.all %}
+      <div class="books-container">
+        {% for book in library.books.all %}
+        <div class="book-item">
+          <div class="book-title">{{ book.title }}</div>
+          <div class="book-author">
+            <strong>Author:</strong>
+            {% if book.author %} {{ book.author.name }} {% else %} {{
+            book.author }} {% endif %}
+          </div>
+          <div class="book-year">
+            <strong>Published:</strong> {{ book.publication_year }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="stats">
+        <strong>Total Books in {{ library.name }}:</strong> {{
+        library.books.count }}
+      </div>
+      {% else %}
+      <div class="no-books">
+        <p>No books are currently available in this library.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="nav-links">
+      <a href="{% url 'book_list' %}">← Back to All Books</a>
+      {% if user.is_authenticated %}
+      <a href="#" onclick="alert('Add Book functionality coming soon!')"
+        >Add New Book</a
+      >
+      {% endif %}
+    </div>
+  </body>
+</html>
