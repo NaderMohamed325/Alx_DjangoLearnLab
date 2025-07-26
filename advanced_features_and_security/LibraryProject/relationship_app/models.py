@@ -67,13 +67,3 @@ def save_user_profile(sender, instance, **kwargs):
         
         
         
-'''
-date_of_birth: A date field.
-profile_photo: An image field.
-'''        
-class CustomUser(AbstractBaseUser):
-    name=models.CharField(max_length=100)
-    email=models.EmailField()
-    date_of_birth=models.DateField()
-    profile_photo=models.ImageField(upload_to='userPhoto/',blank=True,null=True)
-    
