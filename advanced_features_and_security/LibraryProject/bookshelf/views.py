@@ -40,3 +40,11 @@ def book_list(request):
 
 
 from .forms import ExampleForm
+def example_form_display(request):
+    if request.method=='POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            return redirect('success_url')
+    else:
+        form = ExampleForm()
+    return render(request, 'bookshelf/example_form.html', {'form': form})       

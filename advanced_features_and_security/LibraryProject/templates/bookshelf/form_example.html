@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Example Form</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ form.instance.id }}">
+    <label for="name">Name:</label>
+    {{ form.name }}
+    <br>    
+
+    <button type="submit">Submit</button>
+  </form>
+{% endblock %}
