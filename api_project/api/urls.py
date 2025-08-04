@@ -1,11 +1,11 @@
 from django.urls import path, include
-from .views import BookList, BookViewSet
+from .views import  BookViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'book_all', BookViewSet, basename='book_all')
 
 urlpatterns = [
-    path("books", BookList.as_view(), name="book_list"),
     path("", include(router.urls)),  
+     path('auth/', include('rest_authtoken.urls')),
 ]
