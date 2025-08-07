@@ -3,20 +3,26 @@ from rest_framework.response import Response
 from .models import Book, Author
 from .serializers import BookSerializer, AuthorSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-# -----------------------------
-# 📚 List all books
-# -----------------------------
+from django_filters.rest_framework import DjangoFilterBackend
+
 class BookListView(generics.ListAPIView):
     """
     Retrieve a list of all books.
-    Supports optional filtering by title or author name.
+    Supports filtering by title, author name, and publication year.
     """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.AllowAny]
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    
+    # 🔍 Filterable query parameters
+    filterset_fields = ['title', 'author', 'publication_year']
+
+    # 🔎 Search query (fuzzy)
     search_fields = ['title', 'author__name']
 
+    # ⬇️ Sort by any of these fields
+    ordering_fields = ['title', 'publication_year']
 
 # -----------------------------
 # 🔍 Retrieve a single book by ID
