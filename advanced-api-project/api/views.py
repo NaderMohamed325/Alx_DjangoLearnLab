@@ -2,7 +2,7 @@ from rest_framework import generics, status, permissions, filters
 from rest_framework.response import Response
 from .models import Book, Author
 from .serializers import BookSerializer, AuthorSerializer
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 # -----------------------------
 # 📚 List all books
 # -----------------------------
