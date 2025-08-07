@@ -7,6 +7,11 @@ This module contains comprehensive tests for all Book API endpoints including:
 - Authentication and permission testing
 - Response data integrity and status code validation
 
+Database Configuration:
+- Tests use a separate test database (test_db.sqlite3) configured in settings.py
+- This ensures complete isolation from development/production data
+- Django automatically creates/destroys the test database for each test run
+
 Test Categories:
 1. BookListView Tests - Testing list, filter, search, and ordering
 2. BookDetailView Tests - Testing single book retrieval
