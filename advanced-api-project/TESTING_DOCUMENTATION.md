@@ -4,6 +4,37 @@
 
 This document outlines the comprehensive testing strategy for the Book API endpoints in the advanced_api_project. The tests ensure functionality, data integrity, security, and proper error handling.
 
+## Database Configuration for Testing
+
+### Separate Test Database
+
+The project is configured with a separate test database to ensure:
+
+- **Data Isolation**: Tests don't affect development or production data
+- **Clean State**: Each test run starts with a fresh database
+- **Performance**: Faster test execution with dedicated test database
+
+**Configuration** (in `settings.py`):
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        'TEST': {
+            'NAME': BASE_DIR / 'test_db.sqlite3',
+        }
+    }
+}
+```
+
+Django automatically:
+
+- Creates `test_db.sqlite3` before tests run
+- Applies all migrations to the test database
+- Destroys the test database after tests complete
+- Isolates each test in a transaction that gets rolled back
+
 ## Testing Strategy
 
 ### 1. Test Structure
