@@ -1,8 +1,12 @@
-{% extends 'blog/base.html' %} {% load static %} {% block title %}Edit Comment{%
-endblock %} {% block content %}
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block title %}
+{% if form.instance.pk %}Edit Comment{% else %}Add Comment{% endif %}
+{% endblock %}
+{% block content %}
 <div class="comment-form-container">
   <div class="comment-form-header">
-    <h2>Edit Comment</h2>
+    <h2>{% if form.instance.pk %}Edit Comment{% else %}Add New Comment{% endif %}</h2>
   </div>
 
   <form method="POST" class="comment-form">
