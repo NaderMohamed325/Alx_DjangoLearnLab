@@ -138,6 +138,23 @@ def comment_create(request, pk):
     
     return redirect('post_detail', pk=post.pk)
 
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    """Class-based view to create a new comment."""
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+    
+    def form_valid(self, form):
+        """Set post and author before saving."""
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        form.instance.author = self.request.user
+        messages.success(self.request, 'Your comment has been added!')
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        """Return to the post detail page after creating the comment."""
+        return reverse('post_detail', kwargs={'pk': self.kwargs['pk']})
+
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     """View to update an existing comment."""
     model = Comment
