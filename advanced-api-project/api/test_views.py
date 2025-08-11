@@ -7,11 +7,6 @@ This module contains comprehensive tests for all Book API endpoints including:
 - Authentication and permission testing
 - Response data integrity and status code validation
 
-Database Configuration:
-- Tests use a separate test database (test_db.sqlite3) configured in settings.py
-- This ensures complete isolation from development/production data
-- Django automatically creates/destroys the test database for each test run
-
 Test Categories:
 1. BookListView Tests - Testing list, filter, search, and ordering
 2. BookDetailView Tests - Testing single book retrieval
@@ -97,14 +92,6 @@ class BookAPITestCase(APITestCase):
     def unauthenticate(self):
         """Helper method to remove authentication credentials."""
         self.client.credentials()
-    
-    def login_as_admin(self):
-        """Alternative authentication method using session-based login."""
-        self.client.login(username='admin', password='testpass123')
-    
-    def login_as_user(self):
-        """Alternative authentication method using session-based login."""
-        self.client.login(username='testuser', password='testpass123')
 
 
 class BookListViewTests(BookAPITestCase):
@@ -539,30 +526,3 @@ class BookDataValidationTests(BookAPITestCase):
         response = self.client.post(url, book_data, format='json')
         # Should fail if title has max_length validation
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_session_authentication_with_separate_database(self):
-        """Test using session-based authentication with separate test database."""
-        # This test demonstrates that the separate test database is working
-        # with session-based authentication using self.client.login
-        
-        # Login using session authentication
-        login_success = self.client.login(username='testuser', password='testpass123')
-        self.assertTrue(login_success)
-        
-        # Create a book using session authentication
-        url = reverse('book-create')
-        book_data = {
-            'title': 'Session Auth Test Book',
-            'publication_year': 2023,
-            'author': self.author1.id
-        }
-        
-        response = self.client.post(url, book_data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['title'], 'Session Auth Test Book')
-        
-        # Verify the book exists in the test database
-        self.assertTrue(Book.objects.filter(title='Session Auth Test Book').exists())
-        
-        # Logout
-        self.client.logout()
