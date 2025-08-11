@@ -1,4 +1,5 @@
-{% extends 'blog/base.html' %} {% load static %} {% block content %}
+{% extends 'blog/base.html' %}
+{% load static %} {% block title %} Home {% endblock %} {% block content %}
 <div class="container mt-4">
   <h1 class="mb-4">Welcome to the Blog Home!</h1>
   {% if posts %}
@@ -9,7 +10,9 @@
         <div class="card-body">
           <h5 class="card-title">{{ post.title }}</h5>
           <p class="card-text">{{ post.content|truncatewords:30 }}</p>
-          <a href="#" class="btn btn-primary">Read More</a>
+          <a href="{% url 'post_detail' post.id %}" class="btn btn-primary"
+            >Read More</a
+          >
         </div>
         <div class="card-footer text-muted">
           Posted by {{ post.author }} on {{ post.published_date|date:"F j, Y" }}
