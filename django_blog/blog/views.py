@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import logout
 from django.views.generic import (
     ListView,
     DetailView,
@@ -11,9 +12,10 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from django.urls import reverse_lazy
-from .models import Post
-from .forms import UserRegisterForm, PostForm
+from django.urls import reverse_lazy, reverse
+from django.http import HttpResponseRedirect
+from .models import Post, Comment
+from .forms import UserRegisterForm, PostForm, CommentForm
 
 
 def register_view(request):
@@ -37,6 +39,12 @@ def profile_view(request):
     """Display user profile."""
     return render(request, 'blog/profile.html')
 
+def logout_view(request):
+    """Handle user logout."""
+    logout(request)
+    messages.success(request, 'You have been logged out successfully!')
+    return redirect('home')
+
 @login_required
 def home_view(request):
     """Display home page."""
@@ -44,6 +52,7 @@ def home_view(request):
     return render(request, 'blog/home.html', {'posts': post_list})
 
 # Class-based views for Post CRUD operations
+
 class PostListView(ListView):
     """View to display all blog posts."""
     model = Post
@@ -56,6 +65,12 @@ class PostDetailView(DetailView):
     """View to display a single blog post."""
     model = Post
     template_name = 'blog/post_detail.html'
+    
+    def get_context_data(self, **kwargs):
+        """Add comment form to context."""
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm()
+        return context
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     """View to create a new blog post."""
@@ -102,3 +117,62 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Your post has been deleted!')
         return super().delete(request, *args, **kwargs)
+
+# Comment views
+@login_required
+def comment_create(request, pk):
+    """Create a new comment on a post."""
+    post = get_object_or_404(Post, pk=pk)
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            messages.success(request, 'Your comment has been added!')
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = CommentForm()
+    
+    return redirect('post_detail', pk=post.pk)
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """View to update an existing comment."""
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/comment_form.html'
+    
+    def get_success_url(self):
+        """Return to the post detail page after updating the comment."""
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+    
+    def form_valid(self, form):
+        """Show success message and update the comment."""
+        messages.success(self.request, 'Your comment has been updated!')
+        return super().form_valid(form)
+    
+    def test_func(self):
+        """Check if the current user is the author of the comment."""
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """View to delete a comment."""
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'
+    
+    def get_success_url(self):
+        """Return to the post detail page after deleting the comment."""
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+    
+    def delete(self, request, *args, **kwargs):
+        """Show success message and delete the comment."""
+        messages.success(self.request, 'Your comment has been deleted!')
+        return super().delete(request, *args, **kwargs)
+    
+    def test_func(self):
+        """Check if the current user is the author of the comment."""
+        comment = self.get_object()
+        return self.request.user == comment.author

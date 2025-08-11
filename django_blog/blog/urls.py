@@ -5,18 +5,22 @@ from .views import (
     home_view,
     register_view,
     profile_view,
+    logout_view,
     PostListView,
     PostDetailView,
     PostCreateView,
     PostUpdateView,
-    PostDeleteView
+    PostDeleteView,
+    comment_create,
+    CommentUpdateView,
+    CommentDeleteView
 )
 
 urlpatterns = [
     # Authentication URLs
     path('register/', register_view, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='blog/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='blog/logout.html'), name='logout'),
+    path('logout/', logout_view, name='logout'),
     path('profile/', profile_view, name='profile'),
     
     # Home URLs
@@ -29,4 +33,9 @@ urlpatterns = [
     path('post/new/', PostCreateView.as_view(), name='post_create'),
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post_update'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'),
+    
+    # Comment CRUD URLs
+    path('posts/<int:pk>/comment/', comment_create, name='comment_create'),
+    path('comments/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
+    path('comments/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
 ]
