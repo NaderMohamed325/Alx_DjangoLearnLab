@@ -84,14 +84,22 @@ class PostListView(ListView):
         ctx['all_tags'] = Tag.objects.all()
         return ctx
 
-def tag_posts_view(request, slug):
-    tag = get_object_or_404(Tag, slug=slug)
-    posts = Post.objects.filter(tags=tag).order_by('-published_date')
-    return render(request, 'blog/tag_posts.html', {
-        'tag': tag,
-        'posts': posts,
-        'all_tags': Tag.objects.all(),
-    })
+class PostByTagListView(ListView):
+    """List posts filtered by a tag slug (class-based)."""
+    model = Post
+    template_name = 'blog/tag_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        self.tag = get_object_or_404(Tag, slug=self.kwargs.get('tag_slug'))
+        return Post.objects.filter(tags__slug=self.tag.slug).order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['tag'] = self.tag
+        ctx['all_tags'] = Tag.objects.all()
+        return ctx
 
 def search_view(request):
     q = request.GET.get('q', '').strip()
