@@ -1,7 +1,5 @@
-{% extends 'blog/base.html' %}
-{% load static %}
-{% block title %}{{ post.title }}{% endblock %}
-{% block content %}
+{% extends 'blog/base.html' %} {% load static %} {% block title %}{{ post.title
+}}{% endblock %} {% block content %}
 <div class="post-detail-container">
   <article class="post-detail">
     <header class="post-header">
@@ -17,7 +15,9 @@
     <div class="post-tags">
       <strong>Tags:</strong>
       {% for tag in post.tags.all %}
-        <a class="tag-pill" href="{% url 'tag_posts' tag.slug %}">{{ tag.name }}</a>
+      <a class="tag-pill" href="{% url 'tag_posts' tag.slug %}"
+        >{{ tag.name }}</a
+      >
       {% endfor %}
     </div>
     {% endif %}
