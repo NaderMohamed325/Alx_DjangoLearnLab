@@ -10,6 +10,14 @@
   <body>
     <header>
       <nav>
+      <nav>
+        <form method="get" action="{% url 'search' %}" class="search-form">
+          <input type="text" name="q" placeholder="Search posts..." value="{{ query|default:'' }}" />
+          <button type="submit">Search</button>
+        </form>
+        <ul>
+          <button type="submit">Search</button>
+        </form>
         <ul>
           <li><a href="{% url 'home' %}">Home</a></li>
 
@@ -23,6 +31,13 @@
           <li><a href="{% url 'register' %}">Register</a></li>
           {% endif %}
         </ul>
+        {% if all_tags %}
+        <div class="tag-cloud">
+          {% for tag in all_tags %}
+            <a class="tag-pill" href="{% url 'tag_posts' tag.slug %}">{{ tag.name }}</a>
+          {% endfor %}
+        </div>
+        {% endif %}
       </nav>
     </header>
 
