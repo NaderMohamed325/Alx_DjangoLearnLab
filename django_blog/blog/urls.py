@@ -37,6 +37,7 @@ urlpatterns = [
     
     # Comment CRUD URLs
     path('posts/<int:pk>/comment/', comment_create, name='comment_create'),
+    path('posts/<int:pk>/comment/new/', CommentCreateView.as_view(), name='comment_create_class'),
     path('comments/<int:pk>/update/', CommentUpdateView.as_view(), name='comment_update'),
     path('comments/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
 ]
