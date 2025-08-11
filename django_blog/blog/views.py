@@ -14,7 +14,7 @@ from django.views.generic import (
 )
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from .forms import UserRegisterForm, PostForm, CommentForm
 
 
@@ -60,6 +60,52 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-published_date']
     paginate_by = 5
+
+    def get_queryset(self):
+        qs = Post.objects.all().order_by('-published_date').prefetch_related('tags', 'author')
+        q = self.request.GET.get('q')
+        tag_slug = self.request.GET.get('tag')
+        from django.db.models import Q
+        if q:
+            qs = qs.filter(
+                Q(title__icontains=q) | Q(content__icontains=q) | Q(tags__name__icontains=q)
+            ).distinct()
+        if tag_slug:
+            qs = qs.filter(tags__slug=tag_slug)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['query'] = self.request.GET.get('q', '')
+        ctx['active_tag'] = None
+        tag_slug = self.request.GET.get('tag')
+        if tag_slug:
+            ctx['active_tag'] = get_object_or_404(Tag, slug=tag_slug)
+        ctx['all_tags'] = Tag.objects.all()
+        return ctx
+
+def tag_posts_view(request, slug):
+    tag = get_object_or_404(Tag, slug=slug)
+    posts = Post.objects.filter(tags=tag).order_by('-published_date')
+    return render(request, 'blog/tag_posts.html', {
+        'tag': tag,
+        'posts': posts,
+        'all_tags': Tag.objects.all(),
+    })
+
+def search_view(request):
+    q = request.GET.get('q', '').strip()
+    posts = Post.objects.none()
+    if q:
+        from django.db.models import Q
+        posts = Post.objects.filter(
+            Q(title__icontains=q) | Q(content__icontains=q) | Q(tags__name__icontains=q)
+        ).distinct().order_by('-published_date')
+    return render(request, 'blog/search_results.html', {
+        'query': q,
+        'posts': posts,
+        'all_tags': Tag.objects.all(),
+    })
 
 class PostDetailView(DetailView):
     """View to display a single blog post."""

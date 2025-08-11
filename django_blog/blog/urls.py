@@ -14,7 +14,9 @@ from .views import (
     comment_create,
     CommentCreateView,
     CommentUpdateView,
-    CommentDeleteView
+    CommentDeleteView,
+    tag_posts_view,
+    search_view,
 )
 
 urlpatterns = [
@@ -34,6 +36,10 @@ urlpatterns = [
     path('post/new/', PostCreateView.as_view(), name='post_create'),
     path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post_update'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'),
+    
+    # Tag & Search URLs
+    path('tags/<slug:slug>/', tag_posts_view, name='tag_posts'),
+    path('search/', search_view, name='search'),
     
     # Comment CRUD URLs
     path('posts/<int:pk>/comment/', comment_create, name='comment_create'),
