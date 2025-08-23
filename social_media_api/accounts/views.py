@@ -5,6 +5,8 @@ from rest_framework import status, permissions
 from rest_framework.authtoken.models import Token
 
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.models import ContentType
+from notifications.models import Notification
 
 from .serializers import (
     RegisterSerializer,
@@ -71,6 +73,14 @@ class FollowUserView(generics.GenericAPIView):
         except CustomUser.DoesNotExist:
             return Response({'detail': 'User not found.'}, status=404)
         request.user.following.add(target)
+        # create follow notification
+        Notification.objects.create(
+            recipient=target,
+            actor=request.user,
+            verb='started following you',
+            target_content_type=ContentType.objects.get_for_model(CustomUser),
+            target_object_id=request.user.id
+        )
         return Response({'detail': f'Now following {target.username}.'}, status=200)
 
 
