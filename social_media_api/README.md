@@ -183,3 +183,35 @@ Authorization: Token <token>
 
 - To populate your feed, follow some users first.
 - Consider extending feed with pagination later.
+
+## Deployment (Production)
+
+### Environment Variables
+Set these in your hosting provider (e.g. Heroku, Render, Railway):
+- DJANGO_SECRET_KEY (required)
+- DJANGO_DEBUG=false
+- DJANGO_ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com
+- DJANGO_SECURE_SSL_REDIRECT=true
+- DATABASE_URL (if using Postgres via dj-database-url or provider config)
+
+### Static Files
+Run: `python manage.py collectstatic` during build. Whitenoise serves files from `staticfiles/`.
+
+### Gunicorn
+Procfile: `web: gunicorn social_media_api.wsgi --log-file -`
+
+### Database
+Use Postgres in production. Update `DATABASES` via environment (you can integrate `dj-database-url` as an enhancement).
+
+### Security
+Security headers auto-enabled when DEBUG is false.
+
+### Sample Heroku Steps
+1. heroku create
+2. heroku config:set DJANGO_SECRET_KEY=... DJANGO_ALLOWED_HOSTS=yourapp.herokuapp.com
+3. git push heroku main
+4. heroku run python manage.py migrate
+5. heroku run python manage.py createsuperuser
+
+### Monitoring
+Add tools like Sentry (sentry-sdk) and enable logging aggregation.
