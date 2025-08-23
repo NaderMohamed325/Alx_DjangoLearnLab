@@ -158,3 +158,28 @@ Content-Type: application/json
 Pagination: add ?page=2&page_size=5
 
 Filtering/Search: ?search=hello (title or content)
+
+## Follow System & Feed
+
+### Follow Endpoints
+
+- POST /api/accounts/follow/{user_id}/ – follow a user
+- POST /api/accounts/unfollow/{user_id}/ – unfollow a user
+
+Responses include a simple confirmation message. Self-follow/unfollow is blocked.
+
+### Feed Endpoint
+
+- GET /api/feed/ – returns recent posts (max 100) authored by users the authenticated user follows, newest first.
+
+Example:
+
+```http
+GET /api/feed/
+Authorization: Token <token>
+```
+
+### Notes
+
+- To populate your feed, follow some users first.
+- Consider extending feed with pagination later.
