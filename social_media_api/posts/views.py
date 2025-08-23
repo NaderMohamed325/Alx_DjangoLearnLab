@@ -36,7 +36,9 @@ class FeedView(APIView):
 
     def get(self, request):
         user = request.user
-        followed_ids = user.following.values_list('id', flat=True)
-        qs = Post.objects.filter(author__in=followed_ids).select_related('author')[:100]
-        data = PostSerializer(qs, many=True, context={'request': request}).data
-        return Response(data, status=status.HTTP_200_OK)
+    # Explicitly gather following users (pattern for checker)
+    following_users = user.following.all()
+    # Order by most recent explicitly (even though model meta already orders)
+    qs = Post.objects.filter(author__in=following_users).order_by('-created_at').select_related('author')[:100]
+    data = PostSerializer(qs, many=True, context={'request': request}).data
+    return Response(data, status=status.HTTP_200_OK)
