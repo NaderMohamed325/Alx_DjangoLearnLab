@@ -106,3 +106,51 @@ Basic auth flow test exists in `accounts/tests.py` covering register, login, pro
 - Add follower/unfollower endpoints
 - Add pagination and throttling
 - Add tests for auth workflows
+
+## Posts & Comments API
+
+### Endpoints
+
+All routes require authentication (Token) unless read-only.
+
+Posts:
+- GET /api/posts/ (list, supports ?search=term, ?ordering=created_at)
+- POST /api/posts/ (create)
+- GET /api/posts/{id}/ (retrieve)
+- PUT/PATCH /api/posts/{id}/ (update if owner)
+- DELETE /api/posts/{id}/ (delete if owner)
+
+Comments:
+- GET /api/comments/ (list)
+- POST /api/comments/ (create)
+- GET /api/comments/{id}/
+- PUT/PATCH /api/comments/{id}/ (owner only)
+- DELETE /api/comments/{id}/ (owner only)
+
+### Sample Create Post
+```http
+POST /api/posts/
+Authorization: Token <token>
+Content-Type: application/json
+
+{
+  "title": "First Post",
+  "content": "Hello world" 
+}
+```
+
+### Sample Create Comment
+```http
+POST /api/comments/
+Authorization: Token <token>
+Content-Type: application/json
+
+{
+  "post": 1,
+  "content": "Nice post!" 
+}
+```
+
+Pagination: add ?page=2&page_size=5
+
+Filtering/Search: ?search=hello (title or content)
