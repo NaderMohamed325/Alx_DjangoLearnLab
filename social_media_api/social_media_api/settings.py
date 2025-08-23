@@ -150,3 +150,4 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Local apps
 INSTALLED_APPS += ['posts']
+INSTALLED_APPS += ['notifications']
