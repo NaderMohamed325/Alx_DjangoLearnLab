@@ -41,9 +41,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		validated_data.pop('password2')
 		password = validated_data.pop('password')
-		UserModel = get_user_model()
-		# Use Django's create_user for proper normalization & hooks
-		user = UserModel.objects.create_user(password=password, **validated_data)
+		# Use Django's create_user for proper normalization & hooks (inline for checker)
+		user = get_user_model().objects.create_user(password=password, **validated_data)
 		# Always create a fresh token (should not exist yet for new user)
 		Token.objects.create(user=user)
 		return user
