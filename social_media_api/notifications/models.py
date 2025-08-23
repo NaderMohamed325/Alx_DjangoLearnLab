@@ -11,10 +11,13 @@ class Notification(models.Model):
     target_object_id = models.PositiveIntegerField(null=True, blank=True)
     target = GenericForeignKey('target_content_type', 'target_object_id')
     read = models.BooleanField(default=False)
+    # Original timestamp field retained for existing data
     created_at = models.DateTimeField(auto_now_add=True)
+    # Additional explicit timestamp field per requirements
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-timestamp']
 
     def __str__(self):
         return f"Notification(to={self.recipient}, verb={self.verb})"
