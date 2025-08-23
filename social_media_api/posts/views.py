@@ -6,6 +6,7 @@ from notifications.models import Notification
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Q
@@ -62,11 +63,8 @@ class LikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        try:
-            post = Post.objects.get(pk=pk)
-        except Post.DoesNotExist:
-            return Response({'detail': 'Post not found.'}, status=404)
-        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        post = generics.get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
         if created and post.author != request.user:
             Notification.objects.create(
                 recipient=post.author,
@@ -84,10 +82,7 @@ class UnlikePostView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        try:
-            post = Post.objects.get(pk=pk)
-        except Post.DoesNotExist:
-            return Response({'detail': 'Post not found.'}, status=404)
+        post = generics.get_object_or_404(Post, pk=pk)
         deleted, _ = Like.objects.filter(post=post, user=request.user).delete()
         if deleted:
             return Response({'detail': 'Unliked post.'}, status=200)
