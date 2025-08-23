@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Post, Comment
+from .models import Post, Comment, Like
 
 User = get_user_model()
 
@@ -27,13 +27,21 @@ class PostSerializer(serializers.ModelSerializer):
     author = UserSlimSerializer(read_only=True)
     author_id = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), source='author', write_only=True, required=False)
     comments = CommentSerializer(many=True, read_only=True)
+    likes_count = serializers.IntegerField(source='likes.count', read_only=True)
+    liked = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'author', 'author_id', 'title', 'content', 'created_at', 'updated_at', 'comments']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'author']
+    fields = ['id', 'author', 'author_id', 'title', 'content', 'created_at', 'updated_at', 'comments', 'likes_count', 'liked']
+    read_only_fields = ['id', 'created_at', 'updated_at', 'author', 'likes_count', 'liked']
 
     def create(self, validated_data):
         if 'author' not in validated_data:
             validated_data['author'] = self.context['request'].user
         return super().create(validated_data)
+
+    def get_liked(self, obj):
+        user = self.context.get('request').user if self.context.get('request') else None
+        if user and user.is_authenticated:
+            return obj.likes.filter(user=user).exists()
+        return False
