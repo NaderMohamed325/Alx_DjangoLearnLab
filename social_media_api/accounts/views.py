@@ -1,7 +1,10 @@
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status, permissions
 from rest_framework.authtoken.models import Token
+
+from django.contrib.auth import get_user_model
 
 from .serializers import (
     RegisterSerializer,
@@ -9,6 +12,8 @@ from .serializers import (
     UserSerializer,
     ProfileUpdateSerializer,
 )
+
+CustomUser = get_user_model()
 
 
 class RegisterUserView(APIView):
@@ -53,29 +58,33 @@ class ProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class FollowUserView(APIView):
+class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
 
-    def post(self, request, user_id):
+    def post(self, request, user_id):  # follow user
         if request.user.id == user_id:
             return Response({'detail': 'Cannot follow yourself.'}, status=400)
         try:
-            target = UserSerializer.Meta.model.objects.get(pk=user_id)
-        except UserSerializer.Meta.model.DoesNotExist:
+            target = self.get_queryset().get(pk=user_id)
+        except CustomUser.DoesNotExist:
             return Response({'detail': 'User not found.'}, status=404)
         request.user.following.add(target)
         return Response({'detail': f'Now following {target.username}.'}, status=200)
 
 
-class UnfollowUserView(APIView):
+class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
 
-    def post(self, request, user_id):
+    def post(self, request, user_id):  # unfollow user
         if request.user.id == user_id:
             return Response({'detail': 'Cannot unfollow yourself.'}, status=400)
         try:
-            target = UserSerializer.Meta.model.objects.get(pk=user_id)
-        except UserSerializer.Meta.model.DoesNotExist:
+            target = self.get_queryset().get(pk=user_id)
+        except CustomUser.DoesNotExist:
             return Response({'detail': 'User not found.'}, status=404)
         request.user.following.remove(target)
         return Response({'detail': f'Stopped following {target.username}.'}, status=200)
