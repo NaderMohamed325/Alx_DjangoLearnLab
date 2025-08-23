@@ -114,6 +114,7 @@ Basic auth flow test exists in `accounts/tests.py` covering register, login, pro
 All routes require authentication (Token) unless read-only.
 
 Posts:
+
 - GET /api/posts/ (list, supports ?search=term, ?ordering=created_at)
 - POST /api/posts/ (create)
 - GET /api/posts/{id}/ (retrieve)
@@ -121,6 +122,7 @@ Posts:
 - DELETE /api/posts/{id}/ (delete if owner)
 
 Comments:
+
 - GET /api/comments/ (list)
 - POST /api/comments/ (create)
 - GET /api/comments/{id}/
@@ -128,6 +130,7 @@ Comments:
 - DELETE /api/comments/{id}/ (owner only)
 
 ### Sample Create Post
+
 ```http
 POST /api/posts/
 Authorization: Token <token>
@@ -135,11 +138,12 @@ Content-Type: application/json
 
 {
   "title": "First Post",
-  "content": "Hello world" 
+  "content": "Hello world"
 }
 ```
 
 ### Sample Create Comment
+
 ```http
 POST /api/comments/
 Authorization: Token <token>
@@ -147,7 +151,7 @@ Content-Type: application/json
 
 {
   "post": 1,
-  "content": "Nice post!" 
+  "content": "Nice post!"
 }
 ```
 
